@@ -66,3 +66,9 @@ Definition of the different states and their transition (transition functions)
 
 ### Slides
 [Link Slides.com](http://slides.com)
+
+## Technologies
+- HTML DOM
+- Canvas
+- JavaScript
+
