@@ -1,28 +1,35 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dragon Slay</title>
-</head>
-<body>
-    <section id="splashscreen" >
-        <h3>To play:</h3>
-        <div id="instr-desc">
-            <p>Use keypad arrows Left, Right & Up to move the Dragon mother, and shoot the attacking dragon enemies. 
-                Your goal is to kill most dragons in order to fly to the top of the tower to rescure your dragon baby</p>
-        </div>
-        <button id="start">start</button>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <section id="splashscreen">
+      <h2>To play:</h2>
+
+      <div id="instructions">
+        <p>
+          Use keypad arrows Left, Right & Up to move the Dragon mother, and
+          shoot the attacking dragon enemies. Your goal is to kill most dragons
+          in order to fly to the top of the tower to rescure your dragon baby
+        </p>
+      </div>
+      <button id="start">start</button>
     </section>
+
+    <h3 id= "score">Number of dragons killed:</h3>
 
     <section id="gameover">
-        <h3>Highscore:</h3>
-        <button id="restart">Restart</button>
+      <h3>Total number of Dragons killed:</h3>
+      <button id="restart">Restart</button>
     </section>
 
-    
-    <canvas id="myCanvas" width="800" height="600"></canvas>
+    <canvas id="myCanvas" width="600" height="800"></canvas>
 
-    <script src="script.js"></script>
-</body>
+    <script src="./javascript/script.js"></script>
+    <!-- <script src="./javascript/splash.js"></script> -->
+  </body>
 </html>
