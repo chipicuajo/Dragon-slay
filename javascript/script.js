@@ -6,7 +6,7 @@ let startBtn = document.querySelector("#start");
 let splashScreen = document.querySelector("#splashscreen");
 let restartBtn = document.querySelector("#restart");
 let gameover = document.querySelector("#gameover");
-let score = document.querySelector("#score");
+let scoreText = document.querySelector("#score");
 
 let splashImg = new Image();
 splashImg.src = "./assets/splash.png";
@@ -22,6 +22,12 @@ playscreen.src = "./assets/playscreen.png";
 
 let gameOverScreen = new Image();
 gameOverScreen.src = "./assets/gameover.png";
+
+let audio = new Audio("./assets/wings-sound.wav");
+
+let intervalId = 0;
+let isGameOver = false;
+let score = 0;
 
 function draw() {
   // adding background image
@@ -43,16 +49,52 @@ function splashUI() {
   gameover.style.display = "none";
 
   ctx.drawImage(splashImg, 0, 0);
-  animateClouds();
 }
 
 let clouds = [
-  { x: 50, y: 0 },
-  { x: 200, y: -60 },
+  { x: 50, y: 200 },
+  { x: 300, y: 400 },
 ];
+
+function AnimateAll() {}
+
+// Animted clouds function for resuse
 function animateClouds() {
-  ctx.drawImage(cloud1, 50, 0, 150, 100);
-  ctx.drawImage(cloud2, 200, 60, 260, 140);
+  splashUI();
+  let countInterval = 50;
+  let speedInterval = Math.floor(Math.random() * 0.4);
+  for (let i = 0; i < clouds.length; i++) {
+    countInterval += 10;
+    speedInterval += 0.1;
+
+    ctx.drawImage(
+      cloud2,
+      clouds[i].x,
+      clouds[i].y + (cloud1.height + countInterval),
+      200,
+      140
+    );
+
+    ctx.drawImage(cloud1, clouds[i].x, clouds[i].y, 150, 100);
+
+    if (
+      clouds[i].y + cloud1.height > splashImg.y + splashImg.height ||
+      clouds[i].y + cloud2.height > splashImg.y + splashImg.height
+    ) {
+      clouds[i] = {
+        x: 50,
+        y: Math.floor(Math.random() * 10),
+      };
+    }
+    clouds[i].y -= speedInterval;
+  }
+
+  //   animation conditions
+  if (isGameOver) {
+    cancelAnimationFrame(intervalId);
+  } else {
+    intervalId = requestAnimationFrame(animateClouds);
+  }
 }
 
 function gameOverUI() {
@@ -61,6 +103,7 @@ function gameOverUI() {
   startBtn.style.display = "none";
   score.style.display = "none";
   gameover.style.display = "block";
+
   ctx.drawImage(gameOverScreen, 0, 0);
 }
 
@@ -68,7 +111,8 @@ window.addEventListener("load", () => {
   //     audio.play()
   //   start();
   //   draw();
-
   //   gameOverUI();
-  splashUI();
+  //   splashUI();
+  audio.play();
+  animateClouds();
 });
