@@ -1,7 +1,16 @@
-body {
-  font-family: Gill Sans Extrabold, sans-serif;
+* {
+  font-family: "Roboto", sans-serif;
 }
 
-#score {
+h2,
+h3 {
   color: blue;
+}
+#burger {
+  max-width: 1000px;
+  margin: auto;
+}
+
+#instructions {
+  max-width: 400px;
 }

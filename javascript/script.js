@@ -1,5 +1,5 @@
 let canvas = document.getElementById("myCanvas");
-canvas.style.border = "2px solid black";
+canvas.style.border = "2px solid blue";
 let ctx = canvas.getContext("2d");
 
 let startBtn = document.querySelector("#start");
@@ -24,6 +24,10 @@ let gameOverScreen = new Image();
 gameOverScreen.src = "./assets/gameover.png";
 
 let audio = new Audio("./assets/wings-sound.wav");
+audio.loop = "true";
+
+canvas.width = "600";
+canvas.height = "800";
 
 let intervalId = 0;
 let isGameOver = false;
@@ -31,6 +35,7 @@ let score = 0;
 
 function draw() {
   // adding background image
+  ctx.drawImage(playscreen, 0, 0);
   ctx.drawImage(playscreen, 0, 0);
 }
 
@@ -45,7 +50,7 @@ function start() {
 function splashUI() {
   splashScreen.style.display = "block";
   restartBtn.style.display = "none";
-  startBtn.style.display = "none";
+  startBtn.style.display = "block";
   gameover.style.display = "none";
 
   ctx.drawImage(splashImg, 0, 0);
@@ -89,6 +94,9 @@ function animateClouds() {
     clouds[i].y -= speedInterval;
   }
 
+  //animate Mother Dragon
+  function animateMother() {}
+
   //   animation conditions
   if (isGameOver) {
     cancelAnimationFrame(intervalId);
@@ -107,12 +115,18 @@ function gameOverUI() {
   ctx.drawImage(gameOverScreen, 0, 0);
 }
 
+//start button
+startBtn.addEventListener("click", () => {});
+
+//restart button
+startBtn.addEventListener("click", () => {});
+
 window.addEventListener("load", () => {
   //     audio.play()
   //   start();
   //   draw();
   //   gameOverUI();
   //   splashUI();
-  audio.play();
+  //   audio.play();
   animateClouds();
 });
