@@ -7,6 +7,8 @@ let startBtn = document.querySelector("#start");
 let splashScreen = document.querySelector("#splashscreen");
 let restartBtn = document.querySelector("#restart");
 let gameover = document.querySelector("#gameover");
+let gameoverInnerText = document.querySelector("#gameover h3");
+gameoverInnerText.style.display = "none";
 let scoreText = document.querySelector("#score");
 let instr_Text = document.querySelector("#instructions");
 
@@ -32,7 +34,6 @@ let wingsAudio = new Audio("./assets/wings-sound.wav");
 wingsAudio.loop = "true";
 
 let gameoverAudio = new Audio("./assets/gameover-sound.wav");
-gameoverAudio.loop = "true";
 
 let mainAudio = new Audio("./assets/main-music.wav");
 mainAudio.loop = "true";
@@ -60,7 +61,11 @@ function start() {
   gameover.style.display = "none";
 }
 // Animated-clouds function for resuse with (mainUI & splashUI)
-//finished MVP
+//finished UI-MVP
+let clouds = [
+  { x: 50, y: 250 },
+  { x: 300, y: 400 },
+];
 function cloudAnimation(callUI) {
   let countInterval = 50;
   let speedInterval = Math.floor(Math.random() * 0.4);
@@ -71,17 +76,17 @@ function cloudAnimation(callUI) {
     ctx.drawImage(
       cloud2,
       clouds[i].x,
-      clouds[i].y - 50 + (cloud1.height + countInterval),
+      clouds[i].y + (cloud1.height + countInterval),
       200,
       140
     );
 
     ctx.drawImage(cloud1, clouds[i].x, clouds[i].y, 150, 100);
 
-    if (clouds[i].x == playscreen.x) {
+    if (clouds[i].y + cloud2.height < 0 || clouds[i].y + cloud1.height < 0) {
       clouds[i] = {
-        x: 50,
-        y: Math.floor(Math.random() * 10),
+        x: Math.floor(Math.random() * 10),
+        y: 200,
       };
     }
     clouds[i].y -= speedInterval;
@@ -100,6 +105,7 @@ function mainUI() {
 
   ctx.drawImage(playscreen, 0, 0);
   cloudAnimation(mainUI);
+  mainAudio.play();
 }
 function splashUI() {
   startBtn.style.display = "block";
@@ -110,11 +116,6 @@ function splashUI() {
   ctx.drawImage(splashTypo, 0, 100);
   cloudAnimation(splashUI);
 }
-
-let clouds = [
-  { x: 50, y: 200 },
-  { x: 300, y: 400 },
-];
 function animateClouds(callback) {
   callback();
 }
@@ -153,8 +154,7 @@ function drawMother() {
   // requestAnimationFrame(drawMother);
 }
 
-// // animate Mother Dragon
-
+// animate Mother Dragon
 function animateMother() {
   drawMother();
   setTimeout(() => {
@@ -166,19 +166,19 @@ function animateMother() {
 
 function AnimateAll() {}
 
-//gameover page MVP done
+//finished gameover UI-MVP done
 function gameOverUI() {
-  gameover.style.display = "block";
+  // gameoverInnerText.style.display = "none";
   restartBtn.style.display = "block";
   splashScreen.style.display = "none";
-
   startBtn.style.display = "none";
+
   ctx.drawImage(gameOverScreen, 0, 0);
   ctx.beginPath();
   ctx.font = "18px Verdana ";
   ctx.textAlign = "center";
   ctx.fillStyle = "#27273A";
-  ctx.fillText(`${scoreText}`, 260, 580);
+  ctx.fillText(`${gameoverInnerText.innerText}`, 300, 580);
   ctx.closePath();
   gameoverAudio.play();
 }
