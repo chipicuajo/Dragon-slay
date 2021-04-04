@@ -69,7 +69,7 @@ let clouds = [
   { x: 50, y: 250 },
   { x: 300, y: 400 },
 ];
-let cloudAnimation = (callUI) => {
+function cloudAnimation(callUI) {
   let countInterval = 50;
   let speedInterval = Math.floor(Math.random() * 0.4);
   for (let i = 0; i < clouds.length; i++) {
@@ -99,9 +99,10 @@ let cloudAnimation = (callUI) => {
   if (isGameOver) {
     cancelAnimationFrame(intervalId);
   } else {
-    intervalId = requestAnimationFrame(callUI);
+    requestAnimationFrame(callUI);
+    return;
   }
-};
+}
 
 //main screen
 function mainUI() {
@@ -110,7 +111,7 @@ function mainUI() {
 
   ctx.drawImage(playscreen, 0, 0);
   cloudAnimation(mainUI);
-  animateBaby();
+  move();
 
   mainAudio.play();
 }
@@ -141,27 +142,8 @@ function gameOverUI() {
   ctx.closePath();
   gameoverAudio.play();
 }
-let x = 0,
-  y = 0;
-let srcX, srcY;
-let sheetWidth = 749,
-  sheetHeight = 495;
-let cols = 2;
-
-//motherFrame for imgae
-let width = sheetWidth / cols;
-let currentFrame = 0;
-
-function updateFrame() {
-  // ctx.clearRect(x, y, width, sheetHeight);
-  currentFrame = ++currentFrame % cols;
-  srcX = currentFrame * width;
-  srcY = 0;
-}
 
 function drawMother() {
-  updateFrame();
-
   ctx.drawImage(
     motherFrame,
     srcX,
@@ -173,18 +155,10 @@ function drawMother() {
     width / 2,
     sheetHeight / 2
   );
-  // requestAnimationFrame(drawMother);
 }
 
 // animate Mother Dragon
-function animateMother() {
-  drawMother();
-  setTimeout(() => {
-    request = requestAnimationFrame(animateMother);
-  }, 500);
-
-  // requestAnimationFrame(animateMother);
-}
+function animateMother() {}
 
 function AnimateAll() {}
 
@@ -219,8 +193,9 @@ let frameCount = 0;
 function move() {
   frameCount++;
 
-  if (frameCount < 10) {
+  if (frameCount < 7) {
     requestAnimationFrame(move);
+    return;
   }
   frameCount = 0;
   ctx.clearRect(545, 245, adjustWidth, adjustHeight);
@@ -232,9 +207,9 @@ function move() {
   window.requestAnimationFrame(move);
 }
 
-function animateBaby() {
-  requestAnimationFrame(move);
-}
+// function animateBaby() {
+//   requestAnimationFrame(move);
+// }
 window.addEventListener("load", () => {
   //     audio.play()
   //   start();
