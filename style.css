@@ -1,10 +1,8 @@
 * {
   font-family: "Roboto", sans-serif;
 }
-#burger {
+#myCanvas {
   background: url("./assets/playscreen.png");
-  width: 600px;
-  height: 800px;
 }
 h2,
 h3 {

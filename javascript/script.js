@@ -219,9 +219,8 @@ let frameCount = 0;
 function move() {
   frameCount++;
 
-  if (frameCount < 50) {
+  if (frameCount < 10) {
     requestAnimationFrame(move);
-    return;
   }
   frameCount = 0;
   ctx.clearRect(545, 245, adjustWidth, adjustHeight);
