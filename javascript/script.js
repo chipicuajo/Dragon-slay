@@ -110,7 +110,9 @@ function mainUI() {
 
   ctx.drawImage(playscreen, 0, 0);
   cloudAnimation(mainUI);
-  // mainAudio.play();
+  animateBaby();
+
+  mainAudio.play();
 }
 //splash screen
 function splashUI() {
@@ -191,9 +193,48 @@ startBtn.addEventListener("click", () => {});
 
 //restart button
 restartBtn.addEventListener("click", () => {});
+let adjustImg = 2,
+  frameWidth = 173,
+  frameHeight = 180,
+  adjustWidth = frameWidth / adjustImg,
+  adjustHeight = frameHeight / adjustImg;
+
+function updateFrame(frameX, frameY, canvasX, canvasY) {
+  ctx.drawImage(
+    babyFrame,
+    frameX * frameWidth,
+    frameY * frameHeight,
+    frameWidth, //width
+    frameHeight, //height
+    canvasX,
+    canvasY,
+    adjustWidth, // scaledWidth
+    adjustHeight // scaledHeight
+  );
+}
+// window.requestAnimationFrame(move);
+const cycleLoop = [0, 1];
+let currentLoopIndex = 0;
+let frameCount = 0;
+function move() {
+  frameCount++;
+
+  if (frameCount < 50) {
+    requestAnimationFrame(move);
+    return;
+  }
+  frameCount = 0;
+  ctx.clearRect(545, 245, adjustWidth, adjustHeight);
+  updateFrame(cycleLoop[currentLoopIndex], 0, 545, 245);
+  currentLoopIndex++;
+  if (currentLoopIndex >= cycleLoop.length) {
+    currentLoopIndex = 0;
+  }
+  window.requestAnimationFrame(move);
+}
 
 function animateBaby() {
-  ctx.drawImage(babyFrame, 0, 0, 173, 90, 0, 0, 173, 90);
+  requestAnimationFrame(move);
 }
 window.addEventListener("load", () => {
   //     audio.play()
@@ -202,8 +243,5 @@ window.addEventListener("load", () => {
   // gameOverUI();
 
   cloudAnimation(mainUI);
-
-  animateBaby();
-
   // animateMother();
 });
