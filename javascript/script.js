@@ -1,15 +1,14 @@
 let canvas = document.getElementById("myCanvas");
 canvas.style.border = "2px solid blue";
 let ctx = canvas.getContext("2d");
+console.log(ctx);
 
 let startBtn = document.querySelector("#start");
 let splashScreen = document.querySelector("#splashscreen");
 let restartBtn = document.querySelector("#restart");
 let gameover = document.querySelector("#gameover");
 let scoreText = document.querySelector("#score");
-
-let splashImg = new Image();
-splashImg.src = "./assets/splash.png";
+let instr_Text = document.querySelector("#instructions");
 
 let cloud1 = new Image();
 cloud1.src = "./assets/cloud1.png";
@@ -20,52 +19,49 @@ cloud2.src = "./assets/cloud2.png";
 let playscreen = new Image();
 playscreen.src = "./assets/playscreen.png";
 
+let splashTypo = new Image();
+splashTypo.src = "./assets/typo-splash.png";
+
 let gameOverScreen = new Image();
 gameOverScreen.src = "./assets/gameover.png";
 
-let audio = new Audio("./assets/wings-sound.wav");
-audio.loop = "true";
+let motherFrame = new Image();
+motherFrame.src = "./assets/motherframe.png";
+
+let wingsAudio = new Audio("./assets/wings-sound.wav");
+wingsAudio.loop = "true";
+
+let gameoverAudio = new Audio("./assets/gameover-sound.wav");
+gameoverAudio.loop = "true";
+
+let mainAudio = new Audio("./assets/main-music.wav");
+mainAudio.loop = "true";
 
 canvas.width = "600";
 canvas.height = "800";
+motherFrame.width = "270";
+motherFrame.height = "200";
 
 let intervalId = 0;
 let isGameOver = false;
 let score = 0;
+let request;
 
 function draw() {
   // adding background image
   ctx.drawImage(playscreen, 0, 0);
-  ctx.drawImage(playscreen, 0, 0);
 }
 
 function start() {
-  splashScreen.style.display = "none";
   playscreen.style.display = "block";
+  splashScreen.style.display = "none";
   restartBtn.style.display = "none";
   restartBtn.style.display = "none";
   gameover.style.display = "none";
 }
-
-function splashUI() {
-  splashScreen.style.display = "block";
-  restartBtn.style.display = "none";
-  startBtn.style.display = "block";
-  gameover.style.display = "none";
-
-  ctx.drawImage(splashImg, 0, 0);
-}
-
-let clouds = [
-  { x: 50, y: 200 },
-  { x: 300, y: 400 },
-];
-
-function AnimateAll() {}
-
-// Animted clouds function for resuse
-function animateClouds() {
-  splashUI();
+// Animated-clouds function for resuse with (mainUI & splashUI)
+//finished MVP
+function cloudAnimation(callUI) {
   let countInterval = 50;
   let speedInterval = Math.floor(Math.random() * 0.4);
   for (let i = 0; i < clouds.length; i++) {
@@ -75,17 +71,14 @@ function animateClouds() {
     ctx.drawImage(
       cloud2,
       clouds[i].x,
-      clouds[i].y + (cloud1.height + countInterval),
+      clouds[i].y - 50 + (cloud1.height + countInterval),
       200,
       140
     );
 
     ctx.drawImage(cloud1, clouds[i].x, clouds[i].y, 150, 100);
 
-    if (
-      clouds[i].y + cloud1.height > splashImg.y + splashImg.height ||
-      clouds[i].y + cloud2.height > splashImg.y + splashImg.height
-    ) {
+    if (clouds[i].x == playscreen.x) {
       clouds[i] = {
         x: 50,
         y: Math.floor(Math.random() * 10),
@@ -94,39 +87,116 @@ function animateClouds() {
     clouds[i].y -= speedInterval;
   }
 
-  //animate Mother Dragon
-  function animateMother() {}
-
   //   animation conditions
   if (isGameOver) {
     cancelAnimationFrame(intervalId);
   } else {
-    intervalId = requestAnimationFrame(animateClouds);
+    intervalId = requestAnimationFrame(callUI);
   }
 }
-
-function gameOverUI() {
+function mainUI() {
   splashScreen.style.display = "none";
-  restartBtn.style.display = "block";
-  startBtn.style.display = "none";
-  score.style.display = "none";
-  gameover.style.display = "block";
+  gameover.style.display = "none";
 
+  ctx.drawImage(playscreen, 0, 0);
+  cloudAnimation(mainUI);
+}
+function splashUI() {
+  startBtn.style.display = "block";
+  restartBtn.style.display = "none";
+  gameover.style.display = "none";
+
+  ctx.drawImage(playscreen, 0, 0);
+  ctx.drawImage(splashTypo, 0, 100);
+  cloudAnimation(splashUI);
+}
+
+let clouds = [
+  { x: 50, y: 200 },
+  { x: 300, y: 400 },
+];
+function animateClouds(callback) {
+  callback();
+}
+let x = 0,
+  y = 0;
+let srcX, srcY;
+let sheetWidth = 749,
+  sheetHeight = 495;
+let cols = 2;
+
+//motherFrame for imgae
+let width = sheetWidth / cols;
+let currentFrame = 0;
+
+function updateFrame() {
+  // ctx.clearRect(x, y, width, sheetHeight);
+  currentFrame = ++currentFrame % cols;
+  srcX = currentFrame * width;
+  srcY = 0;
+}
+
+function drawMother() {
+  updateFrame();
+
+  ctx.drawImage(
+    motherFrame,
+    srcX,
+    srcY,
+    width,
+    sheetHeight,
+    x,
+    y,
+    width / 2,
+    sheetHeight / 2
+  );
+  // requestAnimationFrame(drawMother);
+}
+
+// // animate Mother Dragon
+
+function animateMother() {
+  drawMother();
+  setTimeout(() => {
+    request = requestAnimationFrame(animateMother);
+  }, 500);
+
+  // requestAnimationFrame(animateMother);
+}
+
+function AnimateAll() {}
+
+//gameover page MVP done
+function gameOverUI() {
+  gameover.style.display = "block";
+  restartBtn.style.display = "block";
+  splashScreen.style.display = "none";
+
+  startBtn.style.display = "none";
   ctx.drawImage(gameOverScreen, 0, 0);
+  ctx.beginPath();
+  ctx.font = "18px Verdana ";
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#27273A";
+  ctx.fillText(`${scoreText}`, 260, 580);
+  ctx.closePath();
+  gameoverAudio.play();
 }
 
 //start button
 startBtn.addEventListener("click", () => {});
 
 //restart button
-startBtn.addEventListener("click", () => {});
+restartBtn.addEventListener("click", () => {});
 
 window.addEventListener("load", () => {
   //     audio.play()
   //   start();
   //   draw();
-  //   gameOverUI();
-  //   splashUI();
-  //   audio.play();
-  animateClouds();
+  // gameOverUI();
+
+  animateClouds(mainUI());
+  // animateClouds(splashUI());
+
+  // animateMother();
 });
