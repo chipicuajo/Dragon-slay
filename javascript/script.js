@@ -30,6 +30,9 @@ gameOverScreen.src = "./assets/gameover.png";
 let motherFrame = new Image();
 motherFrame.src = "./assets/motherframe.png";
 
+let babyFrame = new Image();
+babyFrame.src = "./assets/babyframe.png";
+
 let wingsAudio = new Audio("./assets/wings-sound.wav");
 wingsAudio.loop = "true";
 
@@ -66,7 +69,7 @@ let clouds = [
   { x: 50, y: 250 },
   { x: 300, y: 400 },
 ];
-function cloudAnimation(callUI) {
+let cloudAnimation = (callUI) => {
   let countInterval = 50;
   let speedInterval = Math.floor(Math.random() * 0.4);
   for (let i = 0; i < clouds.length; i++) {
@@ -98,15 +101,18 @@ function cloudAnimation(callUI) {
   } else {
     intervalId = requestAnimationFrame(callUI);
   }
-}
+};
+
+//main screen
 function mainUI() {
   splashScreen.style.display = "none";
   gameover.style.display = "none";
 
   ctx.drawImage(playscreen, 0, 0);
   cloudAnimation(mainUI);
-  mainAudio.play();
+  // mainAudio.play();
 }
+//splash screen
 function splashUI() {
   startBtn.style.display = "block";
   restartBtn.style.display = "none";
@@ -116,8 +122,22 @@ function splashUI() {
   ctx.drawImage(splashTypo, 0, 100);
   cloudAnimation(splashUI);
 }
-function animateClouds(callback) {
-  callback();
+
+//finished gameover UI-MVP done
+function gameOverUI() {
+  // gameoverInnerText.style.display = "none";
+  restartBtn.style.display = "block";
+  splashScreen.style.display = "none";
+  startBtn.style.display = "none";
+
+  ctx.drawImage(gameOverScreen, 0, 0);
+  ctx.beginPath();
+  ctx.font = "18px Verdana ";
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#27273A";
+  ctx.fillText(`${gameoverInnerText.innerText}`, 300, 580);
+  ctx.closePath();
+  gameoverAudio.play();
 }
 let x = 0,
   y = 0;
@@ -166,37 +186,24 @@ function animateMother() {
 
 function AnimateAll() {}
 
-//finished gameover UI-MVP done
-function gameOverUI() {
-  // gameoverInnerText.style.display = "none";
-  restartBtn.style.display = "block";
-  splashScreen.style.display = "none";
-  startBtn.style.display = "none";
-
-  ctx.drawImage(gameOverScreen, 0, 0);
-  ctx.beginPath();
-  ctx.font = "18px Verdana ";
-  ctx.textAlign = "center";
-  ctx.fillStyle = "#27273A";
-  ctx.fillText(`${gameoverInnerText.innerText}`, 300, 580);
-  ctx.closePath();
-  gameoverAudio.play();
-}
-
 //start button
 startBtn.addEventListener("click", () => {});
 
 //restart button
 restartBtn.addEventListener("click", () => {});
 
+function animateBaby() {
+  ctx.drawImage(babyFrame, 0, 0, 173, 90, 0, 0, 173, 90);
+}
 window.addEventListener("load", () => {
   //     audio.play()
   //   start();
   //   draw();
   // gameOverUI();
 
-  animateClouds(mainUI());
-  // animateClouds(splashUI());
+  cloudAnimation(mainUI);
+
+  animateBaby();
 
   // animateMother();
 });
