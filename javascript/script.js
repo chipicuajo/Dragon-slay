@@ -27,6 +27,9 @@ splashTypo.src = "./assets/typo-splash.png";
 let gameOverScreen = new Image();
 gameOverScreen.src = "./assets/gameover.png";
 
+let mother1 = new Image();
+mother1.src = "./assets/mother1.png";
+
 let motherFrame = new Image();
 motherFrame.src = "./assets/motherframe.png";
 
@@ -50,26 +53,119 @@ let intervalId = 0;
 let isGameOver = false;
 let score = 0;
 let request;
+//Variables for drawBabyUpdate();
+let adjustImg = 2,
+  frameWidth = 173,
+  frameHeight = 180,
+  adjustWidth = frameWidth / adjustImg,
+  adjustHeight = frameHeight / adjustImg;
+//Variables for moveBaby()
+const cycleLoop = [0, 1];
+let currentLoopIndex = 0;
+let frameCount = 0;
 
-function draw() {
-  // adding background image
-  ctx.drawImage(playscreen, 0, 0);
+//start button
+startBtn.addEventListener("click", () => {
+  mainGame();
+});
+
+//restart button
+restartBtn.addEventListener("click", () => {
+  mainGame();
+});
+
+//----EVENT LISTENERS for MOTHER Dragon movements---
+document.addEventListener("keydown", (event) => {
+  if (event.code == "ArrowRight") {
+    isArrowRight = true;
+    isArrowLeft = false;
+  } else if (event.code == "ArrowLeft") {
+    isArrowRight = false;
+    isArrowLeft = true;
+  }
+});
+document.addEventListener("keyup", (event) => {
+  isArrowRight = false;
+  isArrowLeft = false;
+});
+document.addEventListener("mouseup", () => {});
+
+function mainGame() {
+  drawMainUi();
+  moveCloud();
+  moveBaby();
+
+  //define GameOver
+  if (isGameOver) {
+    cancelAnimationFrame(intervalId);
+  } else {
+    intervalId = requestAnimationFrame(mainGame);
+  }
 }
-
-function start() {
-  playscreen.style.display = "block";
+//main screen
+function drawMainUi() {
   splashScreen.style.display = "none";
-  restartBtn.style.display = "none";
+  gameover.style.display = "none";
+
+  ctx.drawImage(playscreen, 0, 0);
+  // move();
+  // mainAudio.play();
+}
+//splash screen
+function drawSplashUI() {
+  startBtn.style.display = "block";
   restartBtn.style.display = "none";
   gameover.style.display = "none";
+
+  ctx.drawImage(playscreen, 0, 0);
+  ctx.drawImage(splashTypo, 0, 100);
 }
-// Animated-clouds function for resuse with (mainUI & splashUI)
-//finished UI-MVP
+
+//draw baby
+function drawBabyUpdate(frameX, frameY, canvasX, canvasY) {
+  ctx.drawImage(
+    babyFrame,
+    frameX * frameWidth,
+    frameY * frameHeight,
+    frameWidth, //width
+    frameHeight, //height
+    canvasX,
+    canvasY,
+    adjustWidth, // scaledWidth
+    adjustHeight // scaledHeight
+  );
+}
+
+function moveBaby() {
+  //to keep track of number of frames
+  frameCount++;
+
+  if (frameCount < 7) {
+    requestAnimationFrame(moveBaby);
+    // return;
+  }
+  frameCount = 0;
+  ctx.clearRect(545, 245, adjustWidth, adjustHeight);
+
+  drawBabyUpdate(cycleLoop[currentLoopIndex], 0, 545, 245);
+  currentLoopIndex++;
+  if (currentLoopIndex >= cycleLoop.length) {
+    currentLoopIndex = 0;
+  }
+  // return window.requestAnimationFrame(moveBaby);
+}
+//drawMother
+function drawMother() {
+  ctx.drawImage(mother1, 300, 600);
+}
+
 let clouds = [
   { x: 50, y: 250 },
   { x: 300, y: 400 },
 ];
-function cloudAnimation(callUI) {
+
+function moveCloud() {
+  //   animation conditions
   let countInterval = 50;
   let speedInterval = Math.floor(Math.random() * 0.4);
   for (let i = 0; i < clouds.length; i++) {
@@ -88,43 +184,21 @@ function cloudAnimation(callUI) {
 
     if (clouds[i].y + cloud2.height < 0 || clouds[i].y + cloud1.height < 0) {
       clouds[i] = {
-        x: Math.floor(Math.random() * 10),
+        x: Math.floor(Math.random() * 100),
         y: 200,
       };
     }
     clouds[i].y -= speedInterval;
   }
-
-  //   animation conditions
-  if (isGameOver) {
-    cancelAnimationFrame(intervalId);
-  } else {
-    requestAnimationFrame(callUI);
-    return;
-  }
 }
 
-//main screen
-function mainUI() {
-  splashScreen.style.display = "none";
-  gameover.style.display = "none";
-
-  ctx.drawImage(playscreen, 0, 0);
-  cloudAnimation(mainUI);
-  move();
-
-  mainAudio.play();
+function cloudAnimationSplash() {
+  drawSplashUI();
+  moveCloud();
+  window.requestAnimationFrame(cloudAnimationSplash);
 }
-//splash screen
-function splashUI() {
-  startBtn.style.display = "block";
-  restartBtn.style.display = "none";
-  gameover.style.display = "none";
 
-  ctx.drawImage(playscreen, 0, 0);
-  ctx.drawImage(splashTypo, 0, 100);
-  cloudAnimation(splashUI);
-}
+function collision() {}
 
 //finished gameover UI-MVP done
 function gameOverUI() {
@@ -140,82 +214,16 @@ function gameOverUI() {
   ctx.fillStyle = "#27273A";
   ctx.fillText(`${gameoverInnerText.innerText}`, 300, 580);
   ctx.closePath();
-  gameoverAudio.play();
+  // gameoverAudio.play();
 }
 
-function drawMother() {
-  ctx.drawImage(
-    motherFrame,
-    srcX,
-    srcY,
-    width,
-    sheetHeight,
-    x,
-    y,
-    width / 2,
-    sheetHeight / 2
-  );
-}
-
-// animate Mother Dragon
-function animateMother() {}
-
-function AnimateAll() {}
-
-//start button
-startBtn.addEventListener("click", () => {});
-
-//restart button
-restartBtn.addEventListener("click", () => {});
-let adjustImg = 2,
-  frameWidth = 173,
-  frameHeight = 180,
-  adjustWidth = frameWidth / adjustImg,
-  adjustHeight = frameHeight / adjustImg;
-
-function updateFrame(frameX, frameY, canvasX, canvasY) {
-  ctx.drawImage(
-    babyFrame,
-    frameX * frameWidth,
-    frameY * frameHeight,
-    frameWidth, //width
-    frameHeight, //height
-    canvasX,
-    canvasY,
-    adjustWidth, // scaledWidth
-    adjustHeight // scaledHeight
-  );
-}
-// window.requestAnimationFrame(move);
-const cycleLoop = [0, 1];
-let currentLoopIndex = 0;
-let frameCount = 0;
-function move() {
-  frameCount++;
-
-  if (frameCount < 7) {
-    requestAnimationFrame(move);
-    return;
-  }
-  frameCount = 0;
-  ctx.clearRect(545, 245, adjustWidth, adjustHeight);
-  updateFrame(cycleLoop[currentLoopIndex], 0, 545, 245);
-  currentLoopIndex++;
-  if (currentLoopIndex >= cycleLoop.length) {
-    currentLoopIndex = 0;
-  }
-  window.requestAnimationFrame(move);
-}
-
-// function animateBaby() {
-//   requestAnimationFrame(move);
-// }
 window.addEventListener("load", () => {
   //     audio.play()
   //   start();
-  //   draw();
+
   // gameOverUI();
 
-  cloudAnimation(mainUI);
+  cloudAnimationSplash();
+  // AnimateAll();
   // animateMother();
 });
