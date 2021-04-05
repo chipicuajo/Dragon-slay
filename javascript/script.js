@@ -46,19 +46,26 @@ mainAudio.loop = "true";
 
 canvas.width = "600";
 canvas.height = "800";
-motherFrame.width = "270";
-motherFrame.height = "200";
+// motherFrame.width = "270";
+// motherFrame.height = "200";
 
 let intervalId = 0;
 let isGameOver = false;
 let score = 0;
 let request;
+
+//cloud position Array
+let clouds = [
+  { x: 50, y: 250 },
+  { x: 300, y: 400 },
+];
 //Variables for drawBabyUpdate();
-let adjustImg = 2,
+let adjustImg = 2.5,
   frameWidth = 173,
   frameHeight = 180,
   adjustWidth = frameWidth / adjustImg,
   adjustHeight = frameHeight / adjustImg;
+
 //Variables for moveBaby()
 const cycleLoop = [0, 1];
 let currentLoopIndex = 0;
@@ -66,12 +73,12 @@ let frameCount = 0;
 
 //start button
 startBtn.addEventListener("click", () => {
-  mainGame();
+  mainGameOnStart();
 });
 
 //restart button
 restartBtn.addEventListener("click", () => {
-  mainGame();
+  mainGameOnStart();
 });
 
 //----EVENT LISTENERS for MOTHER Dragon movements---
@@ -90,16 +97,18 @@ document.addEventListener("keyup", (event) => {
 });
 document.addEventListener("mouseup", () => {});
 
-function mainGame() {
+//----MAINGAME putting it all together-----
+function mainGameOnStart() {
   drawMainUi();
   moveCloud();
   moveBaby();
+  drawMother();
 
   //define GameOver
   if (isGameOver) {
     cancelAnimationFrame(intervalId);
   } else {
-    intervalId = requestAnimationFrame(mainGame);
+    intervalId = requestAnimationFrame(mainGameOnStart);
   }
 }
 //main screen
@@ -135,7 +144,7 @@ function drawBabyUpdate(frameX, frameY, canvasX, canvasY) {
     adjustHeight // scaledHeight
   );
 }
-
+// move baby
 function moveBaby() {
   //to keep track of number of frames
   frameCount++;
@@ -145,24 +154,19 @@ function moveBaby() {
     // return;
   }
   frameCount = 0;
-  ctx.clearRect(545, 245, adjustWidth, adjustHeight);
+  // ctx.clearRect(545, 245, adjustWidth, adjustHeight);
 
-  drawBabyUpdate(cycleLoop[currentLoopIndex], 0, 545, 245);
+  drawBabyUpdate(cycleLoop[currentLoopIndex], 0, 545, 260);
   currentLoopIndex++;
   if (currentLoopIndex >= cycleLoop.length) {
     currentLoopIndex = 0;
   }
-  // return window.requestAnimationFrame(moveBaby);
+  // window.requestAnimationFrame(moveBaby);
 }
 //drawMother
 function drawMother() {
-  ctx.drawImage(mother1, 300, 600);
+  ctx.drawImage(mother1, 300, 600, 200, 200);
 }
-
-let clouds = [
-  { x: 50, y: 250 },
-  { x: 300, y: 400 },
-];
 
 function moveCloud() {
   //   animation conditions
@@ -218,12 +222,5 @@ function gameOverUI() {
 }
 
 window.addEventListener("load", () => {
-  //     audio.play()
-  //   start();
-
-  // gameOverUI();
-
   cloudAnimationSplash();
-  // AnimateAll();
-  // animateMother();
 });
