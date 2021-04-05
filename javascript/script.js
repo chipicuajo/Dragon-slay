@@ -183,40 +183,9 @@ function moveMother() {
   if (isArrowDown) motherY += 5;
 }
 
-function moveEnemies() {
-  let printNextAt = 100;
+// function moveEnemies() {
 
-  // making the enemies moves
-  for (let i = 0; i < enemies.length; i++) {
-    ctx.drawImage(
-      enemy1,
-      enemies[i].x + printNextAt,
-      enemies[i].y,
-      enemy1.width,
-      enemy1.height
-    );
-    ctx.drawImage(
-      enemy2,
-      enemies[i].x,
-      enemies[i].y + printNextAt,
-      enemy2.width,
-      enemy2.height
-    );
-    enemies[i].y = enemies[i].y + 2;
-
-    // if (enemies[i].x == 20) {
-    //     score++
-    // }
-
-    // infinite loop for the enemies
-    if (enemies[i].y + enemy1.height > canvas.height + 200) {
-      enemies[i] = {
-        x: Math.floor(Math.random() * 400),
-        y: -100,
-      };
-    }
-  }
-}
+// }
 function moveCloud() {
   //   animation conditions
   let countInterval = 50;
@@ -256,8 +225,45 @@ function mainGameOnStart() {
   moveCloud();
   moveBaby();
   moveMother();
-  moveEnemies();
+  // moveEnemies();
+  let printNextAt = 200;
 
+  // making the enemies moves
+  for (let i = 0; i < enemies.length; i++) {
+    ctx.drawImage(
+      enemy1,
+      enemies[i].x + printNextAt,
+      enemies[i].y,
+      enemy1.width,
+      enemy1.height
+    );
+    ctx.drawImage(
+      enemy2,
+      enemies[i].x,
+      enemies[i].y + printNextAt,
+      enemy2.width,
+      enemy2.height
+    );
+    enemies[i].y = enemies[i].y + 2;
+
+    // if (enemies[i].x == 20) {
+    //     score++
+    // }
+
+    //collision
+    if (enemies[i].y + enemy1.height >= motherY - motherHeight) {
+      isGameOver = true;
+      // gameOverScreen();
+    }
+
+    // infinite loop for the enemies
+    if (enemies[i].y + enemy1.height > canvas.height + 200) {
+      enemies[i] = {
+        x: Math.floor(Math.random() * 400),
+        y: -100,
+      };
+    }
+  }
   //define GameOver
   if (isGameOver) {
     cancelAnimationFrame(intervalId);
@@ -283,11 +289,13 @@ function gameOverUI() {
   ctx.fillStyle = "#27273A";
   ctx.fillText(`${gameoverInnerText.innerText}`, 300, 580);
   ctx.closePath();
-  // gameoverAudio.play();
+  gameoverAudio.play();
+  intervalId = requestAnimationFrame(gameOverUI);
 }
 
 window.addEventListener("load", () => {
   cloudAnimationSplash();
+
   // gameOverUI();
   //start button
   startBtn.addEventListener("click", () => {
