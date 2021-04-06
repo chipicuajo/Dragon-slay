@@ -5,6 +5,9 @@ h2,
 h3 {
   color: blue;
 }
+#restart {
+  z-index: 2000;
+}
 #burger {
   max-width: 800px;
   margin-top: 30px;

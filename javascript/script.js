@@ -112,7 +112,6 @@ let isArrowUp = false,
 //Fireballs variable
 fireball.width = "20";
 fireball.height = "20";
-console.log(fireball);
 let fireballs = [],
   fire = true,
   fireballY = motherY + mother1.height,
@@ -156,10 +155,10 @@ document.addEventListener("keyup", (event) => {
 //main screen
 function drawMainUi() {
   gameover.style.display = "none";
-
+  canvas.style.background = `url("./assets/playscreen.png")`;
   ctx.drawImage(playscreen, 0, 0);
 
-  // mainAudio.play();
+  mainAudio.play();
 }
 //splash screen
 function drawSplashUI() {
@@ -255,8 +254,6 @@ function moveCloud() {
 function cloudAnimationSplash() {
   moveCloud();
   drawSplashUI();
-
-  // window.requestAnimationFrame(cloudAnimationSplash);
 }
 
 //create fireballs
@@ -283,6 +280,7 @@ function drawFireball() {
 }
 function moveEnemies() {
   let printNextAt = Math.floor(Math.random() * 1);
+  enemy1.height = enemy2.height;
   for (let i = 0; i < enemies.length; i++) {
     printNextAt += 0.4;
     ctx.drawImage(
@@ -304,9 +302,14 @@ function moveEnemies() {
     // if (enemies[i].x == 20) {
     //     score++
     // }
+    // motherY <= enemies[i].y + enemy1.height + 80
 
-    if (motherY <= enemies[i].y + enemy1.height + 80) {
-      // isGameOver = true;
+    if (
+      motherY <= enemies[i].y + enemy1.height + 80 ||
+      (motherY <= enemies[i].y + enemy1.height + 80 &&
+        motherX >= enemies[i].x + enemy1.width)
+    ) {
+      isGameOver = true;
     }
 
     // infinite loop for the enemies
@@ -331,7 +334,7 @@ function mainGameOnStart() {
   //define GameOver
   if (isGameOver) {
     cancelAnimationFrame(intervalId);
-    // gameOverUI();
+    gameOverUI();
   } else {
     intervalId = requestAnimationFrame(mainGameOnStart);
   }
@@ -342,15 +345,10 @@ function collision() {}
 //finished gameover UI-MVP done
 function gameOverUI() {
   restartBtn.style.display = "block";
+  // gameover.style.display = "block";
 
-  ctx.drawImage(gameOverScreen, 0, 0);
-  ctx.drawImage(restartButton, 170, 420);
-  ctx.beginPath();
-  ctx.font = "18px Verdana ";
-  ctx.textAlign = "center";
-  ctx.fillStyle = "#27273A";
-  ctx.fillText(`${gameoverInnerText.innerText}`, 300, 580);
-  ctx.closePath();
+  // myCanvas.style.background = "none";
+
   // gameoverAudio.play();
   intervalId = requestAnimationFrame(gameOverUI);
 }
@@ -361,19 +359,17 @@ function gameOverUI() {
 // var endx = posx + restartButton.width;
 // var endy = posy + restartButton.height;
 window.addEventListener("load", () => {
-  // cloudAnimationSplash();
   drawSplashUI();
   // gameOverUI();
 
-  //restart button-- still to implement click within the button image on canvas
-  myCanvas.addEventListener("click", () => {
-    // if (x > posx && y > posy && x < endx && y < endy) {
-    mainGameOnStart();
-    // }
-  });
-  //start button
-  // myCanvas.addEventListener("click", () => {
-  //   console.log("clicked");
+  // restartBtn.addEventListener("click", () => {
   //   mainGameOnStart();
   // });
+  //restart button-- still to implement click within the button image on canvas
+  myCanvas.addEventListener("click", () => {
+    //   // if (x > posx && y > posy && x < endx && y < endy) {
+    mainGameOnStart();
+    //   // }
+  });
+  //start button
 });
