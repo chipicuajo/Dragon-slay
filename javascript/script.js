@@ -1,9 +1,10 @@
 let canvas = document.getElementById("myCanvas");
+// let canvas1 = document.getElementById("myCanvas1");
+// let gameoverCtx = myCanvas1.getContext("2d");
 canvas.style.border = "2px solid blue";
 let ctx = canvas.getContext("2d");
 
 let startBtn = document.querySelector("#start");
-let splashScreen = document.querySelector("#splashscreen");
 let restartBtn = document.querySelector("#restart");
 let gameover = document.querySelector("#gameover");
 let gameoverInnerText = document.querySelector("#gameover h3");
@@ -17,6 +18,18 @@ cloud1.src = "./assets/cloud1.png";
 let cloud2 = new Image();
 cloud2.src = "./assets/cloud2.png";
 
+let cloud3 = new Image();
+cloud3.src = "./assets/cloud3.png";
+
+let startButton = new Image();
+startButton.src = "./assets/start-button.png";
+
+let restartButton = new Image();
+restartButton.src = "./assets/restart-button.png";
+
+let infoText = new Image();
+infoText.src = "./assets/instr-text.png";
+
 let playscreen = new Image();
 playscreen.src = "./assets/playscreen.png";
 
@@ -26,13 +39,13 @@ splashTypo.src = "./assets/typo-splash.png";
 let gameOverScreen = new Image();
 gameOverScreen.src = "./assets/gameover.png";
 
-let enemy1 = new Image(150, 150);
+let enemy1 = new Image(100, 100);
 enemy1.src = "./assets/enemy1.png";
 
-let enemy2 = new Image(150, 150);
+let enemy2 = new Image(100, 100);
 enemy2.src = "./assets/enemy2.png";
 
-let mother1 = new Image();
+let mother1 = new Image(110, 110);
 mother1.src = "./assets/mother1.png";
 
 let motherFrame = new Image();
@@ -41,8 +54,14 @@ motherFrame.src = "./assets/motherframe.png";
 let babyFrame = new Image();
 babyFrame.src = "./assets/babyframe.png";
 
+let fireball = new Image();
+fireball.src = "./assets/fireball.png";
+
 let wingsAudio = new Audio("./assets/wings-sound.wav");
 wingsAudio.loop = "true";
+
+let fireballWhoosh = new Audio("./assets/fireball-whoosh.wav");
+// fireballWhoosh.loop = "true";
 
 let gameoverAudio = new Audio("./assets/gameover-sound.wav");
 
@@ -63,6 +82,7 @@ let clouds = [
   { x: 50, y: 250 },
   { x: 300, y: 400 },
 ];
+
 //Variables for drawBabyUpdate();
 let adjustImg = 2.5,
   frameWidth = 173,
@@ -80,16 +100,24 @@ let enemies = [
   { x: 400, y: 15 },
 ];
 //Variables for drawMother()
-let motherHeight = 180,
-  motherWidth = 180,
-  motherX = 100,
-  motherY = 600,
+let motherX = 100,
+  motherY = canvas.height - 110,
   incrX = 2,
   incrY = 2;
 let isArrowUp = false,
   isArrowRight = false,
   isArrowLeft = false,
-  isArrowDown = false;
+  isArrowDown = false,
+  isSpaceKey = false;
+//Fireballs variable
+fireball.width = "20";
+fireball.height = "20";
+console.log(fireball);
+let fireballs = [],
+  fire = true,
+  fireballY = motherY + mother1.height,
+  fireballX = motherX,
+  incrBall = 15;
 
 //----EVENT LISTENERS for MOTHER Dragon movements---
 document.addEventListener("keydown", (event) => {
@@ -114,26 +142,34 @@ document.addEventListener("keydown", (event) => {
     isArrowUp = false;
     isArrowRight = false;
     isArrowLeft = false;
+  } else if (event.code == "Space") {
+    isSpaceKey = true;
   }
+});
+document.addEventListener("keyup", (event) => {
+  (isArrowUp = false),
+    (isArrowRight = false),
+    (isArrowLeft = false),
+    (isArrowDown = false);
 });
 
 //main screen
 function drawMainUi() {
-  splashScreen.style.display = "none";
   gameover.style.display = "none";
 
   ctx.drawImage(playscreen, 0, 0);
-  // move();
+
   // mainAudio.play();
 }
 //splash screen
 function drawSplashUI() {
-  startBtn.style.display = "block";
-  restartBtn.style.display = "none";
+  // startBtn.style.display = "block";
   gameover.style.display = "none";
 
   ctx.drawImage(playscreen, 0, 0);
-  ctx.drawImage(splashTypo, 0, 100);
+  ctx.drawImage(startButton, 175, 340);
+  ctx.drawImage(splashTypo, 0, 80);
+  ctx.drawImage(infoText, 95, 500);
 }
 
 //draw baby
@@ -160,7 +196,7 @@ function moveBaby() {
     // return;
   }
   frameCount = 0;
-  // ctx.clearRect(545, 245, adjustWidth, adjustHeight);
+  ctx.clearRect(545, 260, adjustWidth, adjustHeight);
 
   drawBabyUpdate(cycleLoop[currentLoopIndex], 0, 545, 260);
   currentLoopIndex++;
@@ -171,9 +207,9 @@ function moveBaby() {
 }
 //drawMother
 function moveMother() {
-  ctx.drawImage(mother1, motherX, motherY, motherWidth, motherHeight);
+  ctx.drawImage(mother1, motherX, motherY, mother1.width, mother1.height);
 
-  if (isArrowRight && motherWidth + motherX < canvas.width + 50) {
+  if (isArrowRight && mother1.width + motherX < canvas.width + 50) {
     motherX += 5;
   }
   if (isArrowLeft && motherX + 50 > 0) motherX -= 5;
@@ -184,7 +220,6 @@ function moveMother() {
 }
 
 // function moveEnemies() {
-
 // }
 function moveCloud() {
   //   animation conditions
@@ -192,7 +227,7 @@ function moveCloud() {
   let speedInterval = Math.floor(Math.random() * 0.5);
   for (let i = 0; i < clouds.length; i++) {
     countInterval += 10;
-    speedInterval += 0.1;
+    speedInterval += 0.3;
 
     ctx.drawImage(
       cloud2,
@@ -203,6 +238,7 @@ function moveCloud() {
     );
 
     ctx.drawImage(cloud1, clouds[i].x, clouds[i].y, 150, 100);
+    ctx.drawImage(cloud3, clouds[i].x + 300, clouds[i].y + 100, 100, 100);
 
     if (clouds[i].y + cloud2.height < 0 || clouds[i].y + cloud1.height < 0) {
       clouds[i] = {
@@ -212,12 +248,15 @@ function moveCloud() {
     }
     clouds[i].y -= speedInterval;
   }
+  // window.requestAnimationFrame(moveCloud);
 }
 
+//On -hold animate clouds for splash screen
 function cloudAnimationSplash() {
-  drawSplashUI();
   moveCloud();
-  window.requestAnimationFrame(cloudAnimationSplash);
+  drawSplashUI();
+
+  // window.requestAnimationFrame(cloudAnimationSplash);
 }
 //----MAINGAME putting it all together-----
 function mainGameOnStart() {
@@ -226,7 +265,7 @@ function mainGameOnStart() {
   moveBaby();
   moveMother();
   // moveEnemies();
-  let printNextAt = 200;
+  let printNextAt = 100;
 
   // making the enemies moves
   for (let i = 0; i < enemies.length; i++) {
@@ -251,9 +290,9 @@ function mainGameOnStart() {
     // }
 
     //collision
-    if (enemies[i].y + enemy1.height >= motherY - motherHeight) {
-      isGameOver = true;
-      // gameOverScreen();
+
+    if (motherY <= enemies[i].y + enemy1.height + 80) {
+      // isGameOver = true;
     }
 
     // infinite loop for the enemies
@@ -264,10 +303,29 @@ function mainGameOnStart() {
       };
     }
   }
+  //fireballs
+  if (isSpaceKey && fire) {
+    fireballWhoosh.play();
+    fireballs.push({
+      x: motherX,
+      y: motherY,
+    });
+    isSpaceKey = false;
+    fire = false;
+  }
+  for (let i = 0; i < fireballs.length; i++) {
+    ctx.drawImage(fireball, fireballs[i].x, fireballs[i].y, 20, 50);
+    fireballs[i].y -= incrBall;
+    if (fireballs[i].y < 150) {
+      fireballs.splice(i, 1);
+      shoot = true;
+    }
+  }
+
   //define GameOver
   if (isGameOver) {
     cancelAnimationFrame(intervalId);
-    gameOverUI();
+    // gameOverUI();
   } else {
     intervalId = requestAnimationFrame(mainGameOnStart);
   }
@@ -277,33 +335,39 @@ function collision() {}
 
 //finished gameover UI-MVP done
 function gameOverUI() {
-  // gameoverInnerText.style.display = "none";
   restartBtn.style.display = "block";
-  splashScreen.style.display = "none";
-  startBtn.style.display = "none";
 
   ctx.drawImage(gameOverScreen, 0, 0);
+  ctx.drawImage(restartButton, 170, 420);
   ctx.beginPath();
   ctx.font = "18px Verdana ";
   ctx.textAlign = "center";
   ctx.fillStyle = "#27273A";
   ctx.fillText(`${gameoverInnerText.innerText}`, 300, 580);
   ctx.closePath();
-  gameoverAudio.play();
+  // gameoverAudio.play();
   intervalId = requestAnimationFrame(gameOverUI);
 }
-
+// var x = canvas.width - 170,
+//   y = canvas.height - 420; //Click offsets, here I assume they already have the value
+// var posx = 170,
+//   posy = 420; //Position of the arrow, the values you used as .drawImage parameters
+// var endx = posx + restartButton.width;
+// var endy = posy + restartButton.height;
 window.addEventListener("load", () => {
-  cloudAnimationSplash();
-
+  // cloudAnimationSplash();
+  drawSplashUI();
   // gameOverUI();
-  //start button
-  startBtn.addEventListener("click", () => {
-    mainGameOnStart();
-  });
 
-  //restart button
-  restartBtn.addEventListener("click", () => {
+  //restart button-- still to implement click within the button image on canvas
+  myCanvas.addEventListener("click", () => {
+    // if (x > posx && y > posy && x < endx && y < endy) {
     mainGameOnStart();
+    // }
   });
+  //start button
+  // myCanvas.addEventListener("click", () => {
+  //   console.log("clicked");
+  //   mainGameOnStart();
+  // });
 });
