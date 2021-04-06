@@ -117,7 +117,7 @@ let fireballs = [],
   fire = true,
   fireballY = motherY + mother1.height,
   fireballX = motherX,
-  incrBall = 15;
+  incrBall = 10;
 
 //----EVENT LISTENERS for MOTHER Dragon movements---
 document.addEventListener("keydown", (event) => {
@@ -227,7 +227,7 @@ function moveCloud() {
   let speedInterval = Math.floor(Math.random() * 0.5);
   for (let i = 0; i < clouds.length; i++) {
     countInterval += 10;
-    speedInterval += 0.3;
+    speedInterval += 0.1;
 
     ctx.drawImage(
       cloud2,
@@ -238,7 +238,7 @@ function moveCloud() {
     );
 
     ctx.drawImage(cloud1, clouds[i].x, clouds[i].y, 150, 100);
-    ctx.drawImage(cloud3, clouds[i].x + 300, clouds[i].y + 100, 100, 100);
+    ctx.drawImage(cloud3, clouds[i].x + 300, clouds[i].y + 100, 100, 70);
 
     if (clouds[i].y + cloud2.height < 0 || clouds[i].y + cloud1.height < 0) {
       clouds[i] = {
@@ -258,52 +258,9 @@ function cloudAnimationSplash() {
 
   // window.requestAnimationFrame(cloudAnimationSplash);
 }
-//----MAINGAME putting it all together-----
-function mainGameOnStart() {
-  drawMainUi();
-  moveCloud();
-  moveBaby();
-  moveMother();
-  // moveEnemies();
-  let printNextAt = 100;
 
-  // making the enemies moves
-  for (let i = 0; i < enemies.length; i++) {
-    ctx.drawImage(
-      enemy1,
-      enemies[i].x + printNextAt,
-      enemies[i].y,
-      enemy1.width,
-      enemy1.height
-    );
-    ctx.drawImage(
-      enemy2,
-      enemies[i].x,
-      enemies[i].y + printNextAt,
-      enemy2.width,
-      enemy2.height
-    );
-    enemies[i].y = enemies[i].y + 2;
-
-    // if (enemies[i].x == 20) {
-    //     score++
-    // }
-
-    //collision
-
-    if (motherY <= enemies[i].y + enemy1.height + 80) {
-      // isGameOver = true;
-    }
-
-    // infinite loop for the enemies
-    if (enemies[i].y + enemy1.height > canvas.height + 200) {
-      enemies[i] = {
-        x: Math.floor(Math.random() * 400),
-        y: -100,
-      };
-    }
-  }
-  //fireballs
+//create fireballs
+function createFireball() {
   if (isSpaceKey && fire) {
     fireballWhoosh.play();
     fireballs.push({
@@ -313,14 +270,63 @@ function mainGameOnStart() {
     isSpaceKey = false;
     fire = false;
   }
+}
+function drawFireball() {
   for (let i = 0; i < fireballs.length; i++) {
-    ctx.drawImage(fireball, fireballs[i].x, fireballs[i].y, 20, 50);
+    ctx.drawImage(fireball, fireballs[i].x + 30, fireballs[i].y - 20, 20, 30);
     fireballs[i].y -= incrBall;
-    if (fireballs[i].y < 150) {
+    if (fireballs[i].y < 100) {
       fireballs.splice(i, 1);
-      shoot = true;
+      fire = true;
     }
   }
+}
+function moveEnemies() {
+  let printNextAt = Math.floor(Math.random() * 1);
+  for (let i = 0; i < enemies.length; i++) {
+    printNextAt += 0.4;
+    ctx.drawImage(
+      enemy1,
+      enemies[i].x + 100,
+      enemies[i].y + enemy1.height,
+      enemy1.width,
+      enemy1.height
+    );
+    ctx.drawImage(
+      enemy2,
+      enemies[i].x,
+      enemies[i].y + 180,
+      enemy2.width,
+      enemy2.height
+    );
+
+    enemies[i].y += printNextAt;
+    // if (enemies[i].x == 20) {
+    //     score++
+    // }
+
+    if (motherY <= enemies[i].y + enemy1.height + 80) {
+      // isGameOver = true;
+    }
+
+    // infinite loop for the enemies
+    if (enemies[i].y + enemy1.height > canvas.height + 200) {
+      enemies[i] = {
+        x: Math.floor(Math.random() * 100),
+        y: Math.floor(Math.random() * printNextAt),
+      };
+    }
+  }
+}
+//----MAINGAME putting it all together-----
+function mainGameOnStart() {
+  drawMainUi();
+  moveCloud();
+  moveBaby();
+  moveMother();
+  createFireball();
+  drawFireball(); //fireballs
+  moveEnemies(); // making the enemies moves
 
   //define GameOver
   if (isGameOver) {
