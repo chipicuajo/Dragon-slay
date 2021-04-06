@@ -6,7 +6,7 @@ let startBtn = document.querySelector("#start");
 let restartBtn = document.querySelector("#restart");
 let gameover = document.querySelector("#gameover");
 let splashScreen = document.querySelector("#splashscreen");
-let scoreText = document.querySelector("#score");
+let scoreText = document.querySelector("#scoreText");
 
 let cloud1 = new Image();
 cloud1.src = "./assets/cloud1.png";
@@ -76,11 +76,7 @@ let adjustImg = 2.5,
 const cycleLoop = [0, 1];
 let currentLoopIndex = 0;
 let frameCount = 0;
-// Enemies cordinates
-let enemies = [
-  { x: 100, y: -5 },
-  { x: 400, y: 15 },
-];
+
 //Variables for drawMother()
 let motherX = 100,
   motherY = canvas.height - 110,
@@ -91,7 +87,7 @@ let isArrowUp = false,
   isArrowLeft = false,
   isArrowDown = false,
   isSpaceKey = false;
-//Fireballs variable
+//fireballs variables
 fireball.width = "20";
 fireball.height = "20";
 let fireballs = [],
@@ -99,6 +95,8 @@ let fireballs = [],
   fireballY = motherY + mother1.height,
   fireballX = motherX,
   incrBall = 10;
+let initalSize = randomSize(); //for resizing enemies
+let enemies = [{ x: 30, y: 30, width: initalSize[0], height: initalSize[1] }];
 
 //----EVENT LISTENERS for MOTHER Dragon movements---
 document.addEventListener("keydown", (event) => {
@@ -143,6 +141,7 @@ function drawMainUi() {
   splashScreen.style.display = "none";
   gameover.style.display = "none";
   canvas.style.display = "block";
+  scoreText.style.display = "block";
   ctx.drawImage(playscreen, 0, 0);
 
   // mainAudio.play();
@@ -152,6 +151,7 @@ function drawSplashUI() {
   startBtn.style.display = "block";
   splashScreen.style.display = "block";
   gameover.style.display = "none";
+  scoreText.style.display = "none";
   canvas.style.display = "none";
 }
 
@@ -161,7 +161,7 @@ function gameOverUI() {
   gameover.style.display = "block";
   splashScreen.style.display = "none";
   canvas.style.display = "none";
-  mainAudio.pause();
+  // mainAudio.pause();
   // gameoverAudio.play();
   intervalId = requestAnimationFrame(gameOverUI);
 }
@@ -251,7 +251,7 @@ function cloudAnimationSplash() {
   drawSplashUI();
 }
 
-//create fireballs
+//create firefireballs
 function createFireball() {
   if (isSpaceKey && fire) {
     fireballWhoosh.play();
@@ -267,55 +267,83 @@ function drawFireball() {
   for (let i = 0; i < fireballs.length; i++) {
     ctx.drawImage(fireball, fireballs[i].x + 30, fireballs[i].y - 20, 20, 30);
     fireballs[i].y -= incrBall;
-    if (fireballs[i].y < 100) {
+    if (fireballs[i].y < 150) {
       fireballs.splice(i, 1);
       fire = true;
     }
   }
 }
+function randomSize() {
+  let rw = Math.floor(Math.random() * 80) + 20;
+  let rh = rw * 1.4;
+  return [rw, rh];
+}
+
 function moveEnemies() {
-  let printNextAt = Math.floor(Math.random() * 1);
-  enemy1.height = enemy2.height;
   for (let i = 0; i < enemies.length; i++) {
-    printNextAt += 0.4;
     ctx.drawImage(
       enemy1,
-      enemies[i].x + 100,
-      enemies[i].y + enemy1.height,
+      enemies[i].x,
+      enemies[i].y,
       enemy1.width,
       enemy1.height
     );
-    ctx.drawImage(
-      enemy2,
-      enemies[i].x,
-      enemies[i].y + 180,
-      enemy2.width,
-      enemy2.height
-    );
 
-    enemies[i].y += printNextAt;
-    // if (enemies[i].x == 20) {
-    //     score++
-    // }
-    // motherY <= enemies[i].y + enemy1.height + 80
-
+    enemies[i].y++;
+    if (enemies[i].y == enemy1.height / 2) {
+      initalSize = randomSize();
+      enemies.push({
+        x: Math.floor(Math.random() * (canvas.width - enemy1.width)),
+        y: -enemy1.height,
+        width: initalSize[0],
+        height: initalSize[1],
+      });
+    }
+    if (enemies[i].y == canvas.height + 2) {
+      enemies.shift();
+      score--;
+      console.log(score);
+    }
+  }
+}
+// Collision
+function collision() {
+  for (let i = 0; i < enemies.length; i++) {
     if (
-      motherY <= enemies[i].y + enemy1.height + 80 ||
-      (motherY <= enemies[i].y + enemy1.height + 80 &&
-        motherX >= enemies[i].x + enemy1.width)
+      motherX < enemies[i].x + enemies[i].width &&
+      motherX + mother1.width > enemies[i].x &&
+      motherY < enemies[i].y + enemies[i].height &&
+      motherY + enemies[i].height > enemies[i].y
     ) {
       isGameOver = true;
     }
 
-    // infinite loop for the enemies
-    if (enemies[i].y + enemy1.height > canvas.height + 200) {
-      enemies[i] = {
-        x: Math.floor(Math.random() * 100),
-        y: Math.floor(Math.random() * printNextAt),
-      };
+    for (let j = 0; j < fireballs.length; j++) {
+      if (
+        fireballs[j].x + 10 < enemies[i].x + enemies[i].width &&
+        fireballs[j].x + fireball.width > enemies[i].x &&
+        fireballs[j].y + 10 < enemies[i].y + enemies[i].height &&
+        fireballs[j].y + enemies[i].height > enemies[i].y
+      ) {
+        fireballs.splice(j, 1);
+        enemies.splice(i, 1);
+        fire = true;
+        score++;
+        console.log(score);
+        if (enemies.length <= 0) {
+          initalSize = randomSize();
+          enemies.push({
+            x: Math.floor(Math.random() * (canvas.width - enemy1.width)),
+            y: -enemy1.height,
+            width: initalSize[0],
+            height: initalSize[1],
+          });
+        }
+      }
     }
   }
 }
+
 //----MAINGAME putting it all together-----
 function mainGameOnStart() {
   drawMainUi();
@@ -323,8 +351,9 @@ function mainGameOnStart() {
   moveBaby();
   moveMother();
   createFireball();
-  drawFireball(); //fireballs
+  drawFireball(); //firefireballs
   moveEnemies(); // making the enemies moves
+  collision(); //all collisions
 
   //define GameOver
   if (isGameOver) {
@@ -334,8 +363,6 @@ function mainGameOnStart() {
     intervalId = requestAnimationFrame(mainGameOnStart);
   }
 }
-
-function collision() {}
 
 window.addEventListener("load", () => {
   drawSplashUI();
@@ -348,5 +375,7 @@ window.addEventListener("load", () => {
   startBtn.addEventListener("click", () => {
     mainGameOnStart();
   });
+
   //start button
 });
+scoreText.innerText = `Score : ${score}`;

@@ -7,15 +7,18 @@
     <link rel="stylesheet" href="style.css">
 </head>
   <body>
-   
+    
+
     <div id="splashscreen" >
       <!-- <h2>To play:</h2> -->
-      <img src="./assets/typo-splash.png" alt="" >
+      <div>
+        <img src="./assets/typo-splash.png" alt="" >
 
-      <img src="./assets/instr-text.png" alt="" >
+        <img class = "info" src="./assets/instr-text.png" alt="" >
+      </div>
 
-      <button id="start" type="button">
-        <img src="./assets/start-button.png" alt="">
+      <button id="start" class = "margin-left" type="button">
+        <img class= "resize" src="./assets/start-button.png" alt="">
       </button>
     </div>
 
@@ -23,12 +26,13 @@
     <div id="gameover" >
       <h3>Total number of Dragons killed:</h3>
 
-      <button id="restart" type="button">
-        <img src="./assets/restart-button.png" alt="">
+      <button id="restart"  class = "margin-left" type="button">
+        <img class= "resize" src="./assets/restart-button.png" alt="">
       </button>
     </div>
-
-    <canvas id="myCanvas"></canvas>
+<div><h3 id="scoreText">Score: </h3>
+  <canvas id="myCanvas"></canvas></div>
+    
     <!-- <canvas id="myCanvas1" width= "600", height ="800"></canvas> -->
     
 
