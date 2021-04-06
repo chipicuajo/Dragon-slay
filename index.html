@@ -3,35 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dragon Slay</title>
-       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Dragon Slay</title>  
     <link rel="stylesheet" href="style.css">
 </head>
   <body>
-    <section id= "burger">
-    <section id="splashscreen">
+   
+    <div id="splashscreen" >
       <!-- <h2>To play:</h2> -->
+      <img src="./assets/typo-splash.png" alt="" >
 
-      <!-- <div id="instructions">
-        <p>
-          Use keypad arrows Left, Right while shooting to move the Dragon mother, and shoot the attacking dragon enemies. Your goal is to kill most dragons 
-          in order to fly to the top of the tower using (arrow Up) to rescure your dragon baby.
-        </p>
-      </div> -->
-    
-      <!-- <button id="start"  type="button" class="btn btn-primary btn-lg">START</button> -->
-    </section>
+      <img src="./assets/instr-text.png" alt="" >
+
+      <button id="start" type="button">
+        <img src="./assets/start-button.png" alt="">
+      </button>
+    </div>
 
 
-    <section id="gameover">
+    <div id="gameover" >
       <h3>Total number of Dragons killed:</h3>
-      <button id="restart" type="button" class="btn btn-primary btn-lg">RESTART</button>
-    </section>
 
-    <canvas id="myCanvas" ></canvas>
+      <button id="restart" type="button">
+        <img src="./assets/restart-button.png" alt="">
+      </button>
+    </div>
+
+    <canvas id="myCanvas"></canvas>
     <!-- <canvas id="myCanvas1" width= "600", height ="800"></canvas> -->
     
-</section>
+
 
      <script src="./javascript/script.js"></script> 
     <script src="./javascript/splash.js"></script>

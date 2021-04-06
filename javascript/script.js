@@ -1,16 +1,12 @@
 let canvas = document.getElementById("myCanvas");
-// let canvas1 = document.getElementById("myCanvas1");
-// let gameoverCtx = myCanvas1.getContext("2d");
 canvas.style.border = "2px solid blue";
 let ctx = canvas.getContext("2d");
 
 let startBtn = document.querySelector("#start");
 let restartBtn = document.querySelector("#restart");
 let gameover = document.querySelector("#gameover");
-let gameoverInnerText = document.querySelector("#gameover h3");
-gameoverInnerText.style.display = "none";
+let splashScreen = document.querySelector("#splashscreen");
 let scoreText = document.querySelector("#score");
-let instr_Text = document.querySelector("#instructions");
 
 let cloud1 = new Image();
 cloud1.src = "./assets/cloud1.png";
@@ -21,23 +17,8 @@ cloud2.src = "./assets/cloud2.png";
 let cloud3 = new Image();
 cloud3.src = "./assets/cloud3.png";
 
-let startButton = new Image();
-startButton.src = "./assets/start-button.png";
-
-let restartButton = new Image();
-restartButton.src = "./assets/restart-button.png";
-
-let infoText = new Image();
-infoText.src = "./assets/instr-text.png";
-
 let playscreen = new Image();
 playscreen.src = "./assets/playscreen.png";
-
-let splashTypo = new Image();
-splashTypo.src = "./assets/typo-splash.png";
-
-let gameOverScreen = new Image();
-gameOverScreen.src = "./assets/gameover.png";
 
 let enemy1 = new Image(100, 100);
 enemy1.src = "./assets/enemy1.png";
@@ -58,12 +39,13 @@ let fireball = new Image();
 fireball.src = "./assets/fireball.png";
 
 let wingsAudio = new Audio("./assets/wings-sound.wav");
-wingsAudio.loop = "true";
+wingsAudio.loop = "false";
 
 let fireballWhoosh = new Audio("./assets/fireball-whoosh.wav");
 // fireballWhoosh.loop = "true";
 
 let gameoverAudio = new Audio("./assets/gameover-sound.wav");
+gameoverAudio.loop = "false";
 
 let mainAudio = new Audio("./assets/main-music.wav");
 mainAudio.loop = "true";
@@ -122,21 +104,24 @@ let fireballs = [],
 document.addEventListener("keydown", (event) => {
   if (event.code == "ArrowRight") {
     isArrowRight = true;
+    wingsAudio.play();
     isArrowLeft = false;
     isArrowUp = false;
     isArrowDown = false;
   } else if (event.code == "ArrowLeft") {
-    console.log("pressing left");
+    wingsAudio.play();
     isArrowLeft = true;
     isArrowRight = false;
     isArrowUp = false;
     isArrowDown = false;
   } else if (event.code == "ArrowUp") {
+    wingsAudio.play();
     isArrowUp = true;
     isArrowRight = false;
     isArrowLeft = false;
     isArrowDown = false;
   } else if (event.code == "ArrowDown") {
+    wingsAudio.play();
     isArrowDown = true;
     isArrowUp = false;
     isArrowRight = false;
@@ -149,26 +134,36 @@ document.addEventListener("keyup", (event) => {
   (isArrowUp = false),
     (isArrowRight = false),
     (isArrowLeft = false),
-    (isArrowDown = false);
+    (isArrowDown = false),
+    wingsAudio.pause();
 });
 
 //main screen
 function drawMainUi() {
+  splashScreen.style.display = "none";
   gameover.style.display = "none";
-  canvas.style.background = `url("./assets/playscreen.png")`;
+  canvas.style.display = "block";
   ctx.drawImage(playscreen, 0, 0);
 
-  mainAudio.play();
+  // mainAudio.play();
 }
 //splash screen
 function drawSplashUI() {
-  // startBtn.style.display = "block";
+  startBtn.style.display = "block";
+  splashScreen.style.display = "block";
   gameover.style.display = "none";
+  canvas.style.display = "none";
+}
 
-  ctx.drawImage(playscreen, 0, 0);
-  ctx.drawImage(startButton, 175, 340);
-  ctx.drawImage(splashTypo, 0, 80);
-  ctx.drawImage(infoText, 95, 500);
+//finished gameover UI-MVP done
+function gameOverUI() {
+  restartBtn.style.display = "block";
+  gameover.style.display = "block";
+  splashScreen.style.display = "none";
+  canvas.style.display = "none";
+  mainAudio.pause();
+  // gameoverAudio.play();
+  intervalId = requestAnimationFrame(gameOverUI);
 }
 
 //draw baby
@@ -342,34 +337,16 @@ function mainGameOnStart() {
 
 function collision() {}
 
-//finished gameover UI-MVP done
-function gameOverUI() {
-  restartBtn.style.display = "block";
-  // gameover.style.display = "block";
-
-  // myCanvas.style.background = "none";
-
-  // gameoverAudio.play();
-  intervalId = requestAnimationFrame(gameOverUI);
-}
-// var x = canvas.width - 170,
-//   y = canvas.height - 420; //Click offsets, here I assume they already have the value
-// var posx = 170,
-//   posy = 420; //Position of the arrow, the values you used as .drawImage parameters
-// var endx = posx + restartButton.width;
-// var endy = posy + restartButton.height;
 window.addEventListener("load", () => {
   drawSplashUI();
   // gameOverUI();
 
-  // restartBtn.addEventListener("click", () => {
-  //   mainGameOnStart();
-  // });
-  //restart button-- still to implement click within the button image on canvas
-  myCanvas.addEventListener("click", () => {
-    //   // if (x > posx && y > posy && x < endx && y < endy) {
+  restartBtn.addEventListener("click", () => {
     mainGameOnStart();
-    //   // }
+  });
+  //restart button-- still to implement click within the button image on canvas
+  startBtn.addEventListener("click", () => {
+    mainGameOnStart();
   });
   //start button
 });

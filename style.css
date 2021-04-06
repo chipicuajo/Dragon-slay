@@ -1,19 +1,24 @@
 #myCanvas {
   background: url("./assets/playscreen.png");
 }
+#splashscreen {
+  background: url("./assets/playscreen.png");
+  width: 600px;
+  height: 800px;
+}
+#gameover {
+  background: url("./assets/gameover.png");
+  width: 600px;
+  height: 800px;
+}
+
+#restart,
+#start {
+  background-color: transparent;
+  border: none;
+}
+
 h2,
 h3 {
   color: blue;
-}
-#restart {
-  z-index: 2000;
-}
-#burger {
-  max-width: 800px;
-  margin-top: 30px;
-  margin: auto;
-}
-
-#instructions {
-  max-width: 300px;
 }
