@@ -24,6 +24,12 @@ Dragon slay is about a Mother Dragon trying to avoid Obstacles in her way in ord
 functions
 - mainGameOnStart() {}
 - gameoverUI () {}
+- moveClouds () {}
+- reset () {}
+- moveEnemies() {}
+- createFireBalls () {}
+- drawFireBalls () {}
+- drawSplashUI () {}
 - splashScreenUI () {}
 - drawMainUI () {}
 - collision () {}
