@@ -71,7 +71,7 @@ let adjustImg = 2.5,
   frameHeight = 180,
   adjustWidth = frameWidth / adjustImg,
   adjustHeight = frameHeight / adjustImg;
-
+console.log(babyFrame.width);
 //Variables for moveBaby()
 const cycleLoop = [0, 1];
 let currentLoopIndex = 0;
@@ -302,6 +302,7 @@ function moveEnemies() {
     if (enemies[i].y == canvas.height + 2) {
       enemies.shift();
       score--;
+      // scoreText.innerText = `Score : ${score}`;
       console.log(score);
     }
   }
@@ -329,6 +330,7 @@ function collision() {
         enemies.splice(i, 1);
         fire = true;
         score++;
+        scoreText.innerText = `Score : ${score}`;
         console.log(score);
         if (enemies.length <= 0) {
           initalSize = randomSize();
@@ -378,4 +380,3 @@ window.addEventListener("load", () => {
 
   //start button
 });
-scoreText.innerText = `Score : ${score}`;
