@@ -73,28 +73,28 @@ let clouds = [
 //Variables for drawBabyUpdate();
 
 //Variables for characterAnimate()
-const cycleLoop = [0, 1];
+let cycleLoop = [0, 1];
 let currentLoopIndex = 0;
 let frameCount = 0;
 
 //Variables for drawMother()
-let motherX = 100,
-  motherY = canvas.height - 110,
-  incrX = 2,
+let motherX = 100;
+let motherY = canvas.height - 110;
+let incrX = 2,
   incrY = 2;
-let isArrowUp = false,
-  isArrowRight = false,
-  isArrowLeft = false,
-  isArrowDown = false,
-  isSpaceKey = false;
+let isArrowUp = false;
+let isArrowRight = false;
+let isArrowLeft = false;
+let isArrowDown = false;
+let isSpaceKey = false;
 //fireballs variables
 fireball.width = 20;
 fireball.height = 20;
-let fireballs = [],
-  fire = true,
-  fireballY = motherY + mother1.height,
-  fireballX = motherX,
-  incrBall = 20;
+let fireballs = [];
+let fire = true;
+let fireballY = motherY + mother1.height;
+let fireballX = motherX;
+let incrBall = 20;
 let initalSize = randomSize(); //for resizing enemies
 let enemies = [{ x: 30, y: 30, width: initalSize[0], height: initalSize[1] }];
 
@@ -143,7 +143,7 @@ function drawMainUi() {
   canvas.style.display = "block";
   scoreText.style.display = "block";
   ctx.drawImage(playscreen, 0, 0);
-
+  scoreText.innerText = `Score : ${score}`;
   // mainAudio.play();
 }
 //splash screen
@@ -218,8 +218,7 @@ function characterAnimate(pWidth, pHeight, onCanvasX, onCanvasY) {
   }
   // window.requestAnimationFrame(characterAnimate);
 }
-//drawMother
-
+//draw & MoveMother
 function moveMother() {
   ctx.drawImage(mother1, motherX, motherY, mother1.width, mother1.height);
 
@@ -351,7 +350,7 @@ function collision() {
         enemies.splice(i, 1);
         fire = true;
         score++;
-        scoreText.innerText = `Score : ${score}`;
+
         console.log(score);
         if (enemies.length <= 0) {
           initalSize = randomSize();
@@ -371,7 +370,7 @@ function reset() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   intervalId = 0;
   isGameOver = false;
-  // score = 0;
+  score = 0;
   (canvasX = 0), (canvasY = 0);
   //cloud position Array
   clouds = [
@@ -395,6 +394,7 @@ function reset() {
   initalSize = randomSize(); //for resizing enemies
   enemies = [{ x: 30, y: 30, width: initalSize[0], height: initalSize[1] }];
 }
+
 //----MAINGAME putting it all together-----
 function mainGameOnStart() {
   drawMainUi();
@@ -416,6 +416,7 @@ function mainGameOnStart() {
   }
 }
 
+//EVENT Listeners
 window.addEventListener("load", () => {
   drawSplashUI();
   // gameOverUI();
