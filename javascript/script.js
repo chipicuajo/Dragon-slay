@@ -2,6 +2,7 @@ let canvas = document.getElementById("myCanvas");
 canvas.style.border = "2px solid blue";
 let ctx = canvas.getContext("2d");
 
+//DOM Elements
 let startBtn = document.querySelector("#start");
 let restartBtn = document.querySelector("#restart");
 let gameover = document.querySelector("#gameover");
@@ -9,6 +10,7 @@ let totalKilled = document.querySelector("#gameover h3");
 let splashScreen = document.querySelector("#splashscreen");
 let scoreText = document.querySelector("#scoreText");
 
+//Load Images
 let cloud1 = new Image();
 cloud1.src = "./assets/cloud1.png";
 
@@ -60,7 +62,6 @@ canvas.height = "800";
 let intervalId = 0;
 let isGameOver = false;
 let score = 0;
-let request;
 let canvasX = 0,
   canvasY = 0;
 //cloud position Array
@@ -341,9 +342,9 @@ function collision() {
 
     for (let j = 0; j < fireballs.length; j++) {
       if (
-        fireballs[j].x + 10 < enemies[i].x + enemies[i].width &&
+        fireballs[j].x < enemies[i].x + enemies[i].width &&
         fireballs[j].x + fireball.width > enemies[i].x &&
-        fireballs[j].y + 10 < enemies[i].y + enemies[i].height &&
+        fireballs[j].y < enemies[i].y + enemies[i].height &&
         fireballs[j].y + enemies[i].height > enemies[i].y
       ) {
         fireballs.splice(j, 1);
@@ -365,7 +366,35 @@ function collision() {
     }
   }
 }
+//RESET game variables
+function reset() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  intervalId = 0;
+  isGameOver = false;
+  // score = 0;
+  (canvasX = 0), (canvasY = 0);
+  //cloud position Array
+  clouds = [
+    { x: 50, y: 250 },
+    { x: 300, y: 400 },
+  ];
 
+  //Variables for characterAnimate()
+  cycleLoop = [0, 1];
+  currentLoopIndex = 0;
+  frameCount = 0;
+
+  //Variables for drawMother()
+  (motherX = 100), (motherY = canvas.height - 110), (incrX = 2), (incrY = 2);
+
+  (fireballs = []),
+    (fire = true),
+    (fireballY = motherY + mother1.height),
+    (fireballX = motherX),
+    (incrBall = 20);
+  initalSize = randomSize(); //for resizing enemies
+  enemies = [{ x: 30, y: 30, width: initalSize[0], height: initalSize[1] }];
+}
 //----MAINGAME putting it all together-----
 function mainGameOnStart() {
   drawMainUi();
@@ -374,7 +403,7 @@ function mainGameOnStart() {
   moveMother();
   // motherAnim();
   createFireball();
-  drawFireball(); //firefireballs
+  drawFireball(); //fireballs
   moveEnemies(); // making the enemies moves
   collision(); //all collisions
 
@@ -391,13 +420,14 @@ window.addEventListener("load", () => {
   drawSplashUI();
   // gameOverUI();
 
+  //restart Button
   restartBtn.addEventListener("click", () => {
+    reset();
     mainGameOnStart();
     console.log("clicked");
   });
-});
-
-//restart button-- still to implement click within the button image on canvas
-startBtn.addEventListener("click", () => {
-  mainGameOnStart();
+  //start button-- still to implement click within the button image on canvas
+  startBtn.addEventListener("click", () => {
+    mainGameOnStart();
+  });
 });
