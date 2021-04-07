@@ -1,43 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dragon Slay</title>  
-    <link rel="stylesheet" href="style.css">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dragon Slay</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-  <body>
-    
 
-    <div id="splashscreen" >
-      <!-- <h2>To play:</h2> -->
-      <div>
-        <img src="./assets/typo-splash.png" alt="" >
+<body>
 
-        <img class = "info" src="./assets/instr-text.png" alt="" >
-      </div>
 
-      <button id="start" class = "margin-left" type="button">
-        <img class= "resize" src="./assets/start-button.png" alt="">
-      </button>
+  <div id="splashscreen">
+
+    <div>
+      <img src="./assets/typo-splash.png" alt="">
+
+      <img class="info" src="./assets/instr-text.png" alt="">
     </div>
 
-
-    <div id="gameover" >
-      <h3>Total number of Dragons killed:</h3>
-
-      <button id="restart"  class = "margin-left" type="button">
-        <img class= "resize" src="./assets/restart-button.png" alt="">
-      </button>
-    </div>
-<div><h3 id="scoreText">Score: </h3>
-  <canvas id="myCanvas"></canvas></div>
-    
-    <!-- <canvas id="myCanvas1" width= "600", height ="800"></canvas> -->
-    
+    <button id="start" class="margin-left">
+      <img class="resize" src="./assets/start-button.png" >
+    </button>
+  </div>
 
 
-     <script src="./javascript/script.js"></script> 
-    <script src="./javascript/splash.js"></script>
-  </body>
+  <div id="gameover">
+    <h3></h3>
+
+    <button id="restart" class="margin-left">
+      <img class="resize" src="./assets/restart-button.png" >
+    </button>
+  </div>
+
+  <div>
+    <h3 id="scoreText"></h3>
+    <canvas id="myCanvas"></canvas>
+  </div>
+
+  <script src="./javascript/script.js"></script>
+  <!-- <script src="./javascript/splash.js"></script> -->
+</body>
+
 </html>

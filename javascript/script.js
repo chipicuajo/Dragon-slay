@@ -5,6 +5,7 @@ let ctx = canvas.getContext("2d");
 let startBtn = document.querySelector("#start");
 let restartBtn = document.querySelector("#restart");
 let gameover = document.querySelector("#gameover");
+let totalKilled = document.querySelector("#gameover h3");
 let splashScreen = document.querySelector("#splashscreen");
 let scoreText = document.querySelector("#scoreText");
 
@@ -29,10 +30,13 @@ enemy2.src = "./assets/enemy2.png";
 let mother1 = new Image(110, 110);
 mother1.src = "./assets/mother1.png";
 
+let mother2 = new Image(110, 110);
+mother2.src = "./assets/mother2.png";
+
 let motherFrame = new Image();
 motherFrame.src = "./assets/motherframe.png";
 
-let babyFrame = new Image();
+let babyFrame = new Image(173, 180);
 babyFrame.src = "./assets/babyframe.png";
 
 let fireball = new Image();
@@ -66,13 +70,8 @@ let clouds = [
 ];
 
 //Variables for drawBabyUpdate();
-let adjustImg = 2.5,
-  frameWidth = 173,
-  frameHeight = 180,
-  adjustWidth = frameWidth / adjustImg,
-  adjustHeight = frameHeight / adjustImg;
-console.log(babyFrame.width);
-//Variables for moveBaby()
+
+//Variables for characterAnimate()
 const cycleLoop = [0, 1];
 let currentLoopIndex = 0;
 let frameCount = 0;
@@ -88,13 +87,13 @@ let isArrowUp = false,
   isArrowDown = false,
   isSpaceKey = false;
 //fireballs variables
-fireball.width = "20";
-fireball.height = "20";
+fireball.width = 20;
+fireball.height = 20;
 let fireballs = [],
   fire = true,
   fireballY = motherY + mother1.height,
   fireballX = motherX,
-  incrBall = 10;
+  incrBall = 20;
 let initalSize = randomSize(); //for resizing enemies
 let enemies = [{ x: 30, y: 30, width: initalSize[0], height: initalSize[1] }];
 
@@ -161,60 +160,81 @@ function gameOverUI() {
   gameover.style.display = "block";
   splashScreen.style.display = "none";
   canvas.style.display = "none";
+  scoreText.style.display = "none";
+  totalKilled.innerText = `Total number of Dragons killed: ${score}`;
   // mainAudio.pause();
   // gameoverAudio.play();
-  intervalId = requestAnimationFrame(gameOverUI);
+  // intervalId = requestAnimationFrame(gameOverUI);
 }
 
 //draw baby
-function drawBabyUpdate(frameX, frameY, canvasX, canvasY) {
+function drawBabyUpdate(
+  babyFrame,
+  frameX,
+  frameY,
+  canvasX,
+  canvasY,
+  updateWidth,
+  updateHeight
+) {
   ctx.drawImage(
     babyFrame,
-    frameX * frameWidth,
-    frameY * frameHeight,
-    frameWidth, //width
-    frameHeight, //height
+    frameX * babyFrame.width,
+    frameY * babyFrame.height,
+    babyFrame.width, //width
+    babyFrame.height, //height
     canvasX,
     canvasY,
-    adjustWidth, // scaledWidth
-    adjustHeight // scaledHeight
+    updateWidth, // scaledWidth
+    updateHeight // scaledHeight
   );
 }
+
 // move baby
-function moveBaby() {
+function characterAnimate(pWidth, pHeight, onCanvasX, onCanvasY) {
   //to keep track of number of frames
   frameCount++;
 
   if (frameCount < 7) {
-    requestAnimationFrame(moveBaby);
+    requestAnimationFrame(characterAnimate);
     // return;
   }
   frameCount = 0;
-  ctx.clearRect(545, 260, adjustWidth, adjustHeight);
-
-  drawBabyUpdate(cycleLoop[currentLoopIndex], 0, 545, 260);
+  ctx.clearRect(onCanvasX, onCanvasY, pWidth, pHeight);
+  ctx.imageSmoothingEnabled = false;
+  drawBabyUpdate(
+    babyFrame,
+    cycleLoop[currentLoopIndex],
+    0,
+    onCanvasX,
+    onCanvasY,
+    pWidth,
+    pHeight
+  );
   currentLoopIndex++;
   if (currentLoopIndex >= cycleLoop.length) {
     currentLoopIndex = 0;
   }
-  // window.requestAnimationFrame(moveBaby);
+  // window.requestAnimationFrame(characterAnimate);
 }
 //drawMother
+
 function moveMother() {
   ctx.drawImage(mother1, motherX, motherY, mother1.width, mother1.height);
 
   if (isArrowRight && mother1.width + motherX < canvas.width + 50) {
-    motherX += 5;
+    motherX += 10;
   }
-  if (isArrowLeft && motherX + 50 > 0) motherX -= 5;
+  if (isArrowLeft && motherX + 50 > 0) motherX -= 10;
 
-  if (isArrowUp) motherY -= 5;
+  if (isArrowUp) motherY -= 10;
 
-  if (isArrowDown) motherY += 5;
+  if (isArrowDown) motherY += 10;
 }
+//to animate mother sprite
+function motherAnim() {}
 
-// function moveEnemies() {
-// }
+//cloud animation
 function moveCloud() {
   //   animation conditions
   let countInterval = 50;
@@ -274,9 +294,9 @@ function drawFireball() {
   }
 }
 function randomSize() {
-  let rw = Math.floor(Math.random() * 80) + 20;
-  let rh = rw * 1.4;
-  return [rw, rh];
+  let randomWidth = Math.floor(Math.random() * 80) + 20;
+  let randomHeight = randomWidth * 1.4;
+  return [randomWidth, randomHeight];
 }
 
 function moveEnemies() {
@@ -350,8 +370,9 @@ function collision() {
 function mainGameOnStart() {
   drawMainUi();
   moveCloud();
-  moveBaby();
+  characterAnimate(65, 69, 545, 260);
   moveMother();
+  // motherAnim();
   createFireball();
   drawFireball(); //firefireballs
   moveEnemies(); // making the enemies moves
@@ -372,11 +393,11 @@ window.addEventListener("load", () => {
 
   restartBtn.addEventListener("click", () => {
     mainGameOnStart();
+    console.log("clicked");
   });
-  //restart button-- still to implement click within the button image on canvas
-  startBtn.addEventListener("click", () => {
-    mainGameOnStart();
-  });
+});
 
-  //start button
+//restart button-- still to implement click within the button image on canvas
+startBtn.addEventListener("click", () => {
+  mainGameOnStart();
 });
