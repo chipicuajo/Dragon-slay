@@ -2,7 +2,7 @@
 
 [See live-Demo](https://cleverttech.github.io/Dragon-slay/)
 
-<img src="https://github.com/Cleverttech/Dragon-slay/blob/main/demo.PNG" alt="demo-Image" margin="auto 0px" width="380" height="190"/>
+<img src="https://github.com/Cleverttech/Dragon-slay/blob/main/dragon-demo.PNG" alt="demo-Image" margin="auto 0px" width="380" height="190"/>
 
 
 ## Description
@@ -22,13 +22,15 @@ Dragon slay is about a Mother Dragon trying to avoid Obstacles in her way in ord
 
 ## Data structure
 functions
-- start () {}
-- restart () {}
+- mainGameOnStart() {}
+- gameoverUI () {}
+- splashScreenUI () {}
+- drawMainUI () {}
 - collision () {}
 - motherMove () {}
 - babyMove () {}
 - Obstacles [] OR
-- class Obstacles {} (Opitional)
+
 
 
 ## States y States Transitions
