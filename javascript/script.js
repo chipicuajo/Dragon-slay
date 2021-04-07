@@ -17,8 +17,8 @@ cloud1.src = "./assets/cloud1.png";
 let cloud2 = new Image();
 cloud2.src = "./assets/cloud2.png";
 
-let cloud3 = new Image();
-cloud3.src = "./assets/cloud3.png";
+// let cloud3 = new Image();
+// cloud3.src = "./assets/cloud2.png";
 
 let playscreen = new Image();
 playscreen.src = "./assets/playscreen.png";
@@ -252,7 +252,7 @@ function moveCloud() {
     );
 
     ctx.drawImage(cloud1, clouds[i].x, clouds[i].y, 150, 100);
-    ctx.drawImage(cloud3, clouds[i].x + 300, clouds[i].y + 100, 100, 70);
+    ctx.drawImage(cloud2, clouds[i].x + 300, clouds[i].y + 100, 100, 70);
 
     if (clouds[i].y + cloud2.height < 0 || clouds[i].y + cloud1.height < 0) {
       clouds[i] = {
