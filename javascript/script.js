@@ -288,7 +288,7 @@ function drawFireball() {
   for (let i = 0; i < fireballs.length; i++) {
     ctx.drawImage(fireball, fireballs[i].x + 30, fireballs[i].y - 20, 20, 30);
     fireballs[i].y -= incrBall;
-    if (fireballs[i].y - fireball.height == canvasY) {
+    if (fireballs[i].y < 0) {
       fireballs.splice(i, 1);
       fire = true;
     }
