@@ -97,7 +97,7 @@ let fireballX = motherX;
 let incrBall = 20;
 let initalSize = randomSize(); //for resizing enemies
 let enemies = [{ x: 30, y: 30, width: initalSize[0], height: initalSize[1] }];
-let incrSpeedEnemies = 4;
+let incrSpeedEnemies = 3;
 
 //----EVENT LISTENERS for MOTHER Dragon movements---
 document.addEventListener("keydown", (event) => {
@@ -311,10 +311,6 @@ function moveEnemies() {
     );
     enemies[i].y += incrSpeedEnemies;
 
-    if (enemies[i].y % 10 == 0) {
-      enemies[i].y *= 1.2;
-    }
-
     if (enemies[i].y == enemy1.height / 2) {
       initalSize = randomSize();
       enemies.push({
@@ -323,6 +319,9 @@ function moveEnemies() {
         width: initalSize[0],
         height: initalSize[1],
       });
+      if (enemies[i].y % 10 === 0) {
+        enemies[i].y *= 1.2;
+      }
     }
     if (enemies[i].y == canvas.height + 2) {
       enemies.shift();
