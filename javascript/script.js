@@ -97,6 +97,7 @@ let fireballX = motherX;
 let incrBall = 20;
 let initalSize = randomSize(); //for resizing enemies
 let enemies = [{ x: 30, y: 30, width: initalSize[0], height: initalSize[1] }];
+let incrSpeedEnemies = 4;
 
 //----EVENT LISTENERS for MOTHER Dragon movements---
 document.addEventListener("keydown", (event) => {
@@ -308,8 +309,12 @@ function moveEnemies() {
       enemy1.width,
       enemy1.height
     );
+    enemies[i].y += incrSpeedEnemies;
 
-    enemies[i].y++;
+    if (enemies[i].y % 10 == 0) {
+      enemies[i].y *= 1.2;
+    }
+
     if (enemies[i].y == enemy1.height / 2) {
       initalSize = randomSize();
       enemies.push({
@@ -332,9 +337,9 @@ function collision() {
   for (let i = 0; i < enemies.length; i++) {
     if (
       motherX < enemies[i].x + enemies[i].width &&
-      motherX + mother1.width > enemies[i].x &&
+      motherX - 50 + mother1.width > enemies[i].x &&
       motherY < enemies[i].y + enemies[i].height &&
-      motherY + enemies[i].height > enemies[i].y
+      motherY - 50 + enemies[i].height > enemies[i].y
     ) {
       isGameOver = true;
     }
