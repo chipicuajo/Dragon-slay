@@ -288,7 +288,7 @@ function drawFireball() {
   for (let i = 0; i < fireballs.length; i++) {
     ctx.drawImage(fireball, fireballs[i].x + 30, fireballs[i].y - 20, 20, 30);
     fireballs[i].y -= incrBall;
-    if (fireballs[i].y < 150) {
+    if (fireballs[i].y - fireball.height == canvasY) {
       fireballs.splice(i, 1);
       fire = true;
     }
@@ -310,7 +310,9 @@ function moveEnemies() {
       enemy1.height
     );
     enemies[i].y += incrSpeedEnemies;
-
+    if (score % 10 === 0) {
+      enemies[i].y *= 1.2;
+    }
     if (enemies[i].y == enemy1.height / 2) {
       initalSize = randomSize();
       enemies.push({
@@ -319,9 +321,6 @@ function moveEnemies() {
         width: initalSize[0],
         height: initalSize[1],
       });
-      if (enemies[i].y % 10 === 0) {
-        enemies[i].y *= 1.2;
-      }
     }
     if (enemies[i].y == canvas.height + 2) {
       enemies.shift();
