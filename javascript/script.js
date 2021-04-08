@@ -168,7 +168,9 @@ function gameOverUI() {
   // gameoverAudio.play();
   // intervalId = requestAnimationFrame(gameOverUI);
 }
-
+function drawWinScreen() {
+  ctx.drawImage(playscreen, 0, 0);
+}
 //draw baby
 function drawBabyUpdate(
   babyFrame,
@@ -319,7 +321,7 @@ function moveEnemies() {
         width: initalSize[0],
         height: initalSize[1],
       });
-      if (score % 10 === 0) {
+      if (score % 5 === 0) {
         incrSpeedEnemies *= 1.2;
       }
     }
